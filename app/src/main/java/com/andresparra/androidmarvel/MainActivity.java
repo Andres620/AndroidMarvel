@@ -4,6 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.net.URL;
 
@@ -14,11 +18,32 @@ import cafsoft.foundation.URLSession;
 
 public class MainActivity extends AppCompatActivity {
 
+    private String superHero;
+    private EditText inputSuperhero;
+    private TextView dataSuperhero;
+    private Button btnSearch;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        inputSuperhero = findViewById(R.id.inputSuperhero);
+        btnSearch = findViewById(R.id.btnSearch);
+        dataSuperhero = findViewById(R.id.dataSuperhero);
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                superHero = inputSuperhero.getText().toString();
+                searchSuperhero(superHero);
+            }
+        });
+    }
+
+    public void searchSuperhero(String superHero){
         URLComponents comp = new URLComponents();
 
         comp.setScheme("https");
@@ -28,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 new URLQueryItem("hash", "d69767aae7d31aa0d251bde8ac5d0765"),
                 new URLQueryItem("ts", "6620"),
                 new URLQueryItem("apikey", "2a98b6481603cfd522db9763d5adaf48"),
-                new URLQueryItem("name", "thor")
+                new URLQueryItem("name", superHero)
         });
         Log.d("url", comp.getURL().toString());
 
@@ -42,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             if (error == null){
                 if(resp.getStatusCode()==200){
                     Log.d("resp", data.toText());
+                    dataSuperhero.setText(data.toText()); //temporalmente
                 }
             }else{
                 Log.d("Error", "Error de red");
